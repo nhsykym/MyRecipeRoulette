@@ -1,0 +1,2 @@
+# MyRecipiRoulette
+レシピをランダムに表示するWebアプリ
