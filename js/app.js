@@ -37,11 +37,31 @@ class App extends React.Component {
   }
 
   handleClick() {
-    const i = Math.floor(Math.random() * this.state.recipes.length);
-    const item = this.state.recipes[i];
-    this.setState({
-      item: item,
-    });
+    const url = 'https://app.rakuten.co.jp/services/api/Recipe/CategoryList/20170426?applicationId=1072861491823725264&categoryType=medium'
+    const request = new XMLHttpRequest()
+    let categories = [];
+    let res = 'bbb';
+    request.open('GET', url, true)
+    request.onload = function() {
+      let data = JSON.parse(this.response)
+      
+      if (request.status >= 200 && request.status < 400) {
+        const categories = data.result.medium.slice();
+        const i = Math.floor(Math.random() * categories.length);
+        const item = categories[i];
+        
+        // this.setState({
+        //   item: item,
+        // });
+      } else {
+        console.log('error')
+      }
+    }
+    request.send()
+
+    // console.log(request.responseText);
+    
+    
   }
 
   render() {
