@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 const smallCat = [
   {
     categoryName: "ソーセージ・ウインナー",
@@ -9438,7 +9440,6 @@ const smallCat = [
     categoryUrl: "https://recipe.rakuten.co.jp/category/39-724-2180/"
     }
 ]
-
 const mediumCat = [
 {
 categoryName: "牛肉",
@@ -12705,7 +12706,6 @@ categoryId: 674,
 categoryUrl: "https://recipe.rakuten.co.jp/category/55-674/"
 }
 ]
-
 const largeCat = [
 {
 categoryName: "人気メニュー",
@@ -12936,25 +12936,33 @@ const AppHeader = () => {
 const OptionsList = (props) => {
   return (
     <div>
-      <label for="category">カテゴリー</label>
-      <select onChange={props.onChange} name="category">
-        <option>選択してください</option>
-        {largeCat.map((option, index) => 
-          <option key={index}>
-            {option.categoryName}
-          </option>)
-        }
-      </select>
+      <label>カテゴリー</label>
+          <select onChange={props.onChange}>
+          <option>選択してください</option>
+          {largeCat.map((option, index) => 
+            <option key={index}>
+              {option.categoryName}
+            </option>)
+          }
+        </select>
     </div>
+  );
+}
+
+const ResultsList = (props) => {
+  return (
+    <div className="result">
+      <Result />
+      <Result />
+      <Result />
+    </div>
+
   );
 }
 
 const Result = (props) => {
   return (
-    <div className="result">
-      {props.recipeUrl==='' ? '' :<a href={props.recipeUrl}>{props.recipeUrl}</a>}
-    </div>
-
+    <h3>recipe</h3>
   );
 }
 
@@ -12963,7 +12971,7 @@ const AppBody = (props) => {
     <div className="bodyWrapper">
       <OptionsList onChange={props.onChange}/>
       <div className="btn" onClick={props.onClick}>?</div>
-      <Result recipeUrl={props.recipeUrl}/>
+      <ResultsList categoryId={props.categoryId}/>
     </div>
   );
 }
@@ -12974,23 +12982,39 @@ class App extends React.Component {
     this.state = {
       item: '',
       category: '',
-      recipeUrl:'',
+      categoryId: '',
+      title: '',
+      url: '',
     }
     this.handleClick = this.handleClick.bind(this);
     this.handleOptionChange = this.handleOptionChange.bind(this);
   }
-
+  
+  // QiitaAPIを叩く
   handleClick() {
-    const query = this.state.category;
-    const result = largeCat.find(item => item.categoryName == query);
-
-    if (result) {
-      this.setState({
-        recipeUrl: result.categoryUrl,
+    //axios.get(APIのエンドポイント,パラメータの引数)
+    axios.get('https://app.rakuten.co.jp/services/api/Recipe/CategoryRanking/20170426', {
+        params: {
+          "applicationId": "1072861491823725264",
+          "categoryId": "10",
+        }
       })
-    } else {
-      alert('カテゴリーを選択してください')
-    }
+      // response にAPIからのレスポンスが格納される
+      .then((response) => {
+        // data にレスポンスから帰ってきた1つ目の記事の情報を格納
+        const data = response.result[0];
+        this.setState({
+          title: data.recipeTitle,
+          url: data.recipeUrl,
+        });
+        // コンソールから response と title と url を確認
+        console.debug(response, "ressponse");
+        console.debug(this.state.title, "title")
+        console.debug(this.state.url, "url")
+      })
+      .catch((error) => {
+        console.debug(error);
+      });
   }
 
   handleOptionChange(e) {
@@ -12998,17 +13022,16 @@ class App extends React.Component {
       category: e.target.value,
     })
   }
- 
+  
   render() {
     return (
       <div>
         <AppHeader />
-        <AppBody item={this.state.item} recipeUrl={this.state.recipeUrl} onClick={this.handleClick} onChange={this.handleOptionChange}/>
+        <AppBody item={this.state.item} categoryId={this.state.categoryId} onClick={this.handleClick} onChange={this.handleOptionChange}/>
       </div>
     );
   }  
 }
-
 
 ReactDOM.render(
   <App/>,
