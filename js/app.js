@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 const smallCat = [
   {
     categoryName: "ソーセージ・ウインナー",
@@ -12938,8 +12936,8 @@ const OptionsList = (props) => {
     <div>
       <label>カテゴリー</label>
           <select onChange={props.onChange}>
-          <option>選択してください</option>
-          {largeCat.map((option, index) => 
+            <option>選択してください</option>
+            {largeCat.map((option, index) => 
             <option key={index}>
               {option.categoryName}
             </option>)
@@ -12960,7 +12958,7 @@ const ResultsList = (props) => {
   );
 }
 
-const Result = (props) => {
+const Result = () => {
   return (
     <h3>recipe</h3>
   );
@@ -12985,36 +12983,26 @@ class App extends React.Component {
       categoryId: '',
       title: '',
       url: '',
+      loading: false,
     }
     this.handleClick = this.handleClick.bind(this);
     this.handleOptionChange = this.handleOptionChange.bind(this);
   }
-  
-  // QiitaAPIを叩く
+
   handleClick() {
-    //axios.get(APIのエンドポイント,パラメータの引数)
-    axios.get('https://app.rakuten.co.jp/services/api/Recipe/CategoryRanking/20170426', {
-        params: {
-          "applicationId": "1072861491823725264",
-          "categoryId": "10",
+      fetch('https://app.rakuten.co.jp/services/api/Recipe/CategoryRanking/20170426?applicationId=1072861491823725264&categoryId=10')
+      .then(res => res.json())
+      .then(
+        (result) => {
+          console.log(result.result[0].recipeTitle);
+          // this.setState({
+
+          // })
+        },
+        (error) => {
+          console.log(error);
         }
-      })
-      // response にAPIからのレスポンスが格納される
-      .then((response) => {
-        // data にレスポンスから帰ってきた1つ目の記事の情報を格納
-        const data = response.result[0];
-        this.setState({
-          title: data.recipeTitle,
-          url: data.recipeUrl,
-        });
-        // コンソールから response と title と url を確認
-        console.debug(response, "ressponse");
-        console.debug(this.state.title, "title")
-        console.debug(this.state.url, "url")
-      })
-      .catch((error) => {
-        console.debug(error);
-      });
+      )
   }
 
   handleOptionChange(e) {
