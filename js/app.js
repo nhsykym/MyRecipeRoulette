@@ -12922,27 +12922,28 @@ categoryUrl: "https://recipe.rakuten.co.jp/category/55/"
 }
 ]
 
-const AppHeader = () => {
+const AppHeader = (props) => {
   return (
     <div className="headerWrapper">
-      <h1>レシピルーレット</h1>
-      <p>ランダムにレシピを表示するよ</p>
+      <h1>レシピ検索サービス</h1>
+      <OptionsList categoryName={props.categoryName} onChange={props.onChange}/>
+      <div className="btn" onClick={props.onClick}>?</div>
     </div>
   );
 }
 
 const OptionsList = (props) => {
+  const category = largeCat.slice();
+  const options = category.map((option) => 
+    <option key={option.categoryId}>{option.categoryName}</option>
+  );
   return (
     <div>
       <label>カテゴリー</label>
-          <select onChange={props.onChange}>
-            <option>選択してください</option>
-            {largeCat.map((option, index) => 
-            <option key={index}>
-              {option.categoryName}
-            </option>)
-          }
-        </select>
+      <select value={props.categoryName} onChange={props.onChange}>
+        <option>選択してください</option>
+        {options}
+      </select>
     </div>
   );
 }
@@ -12967,8 +12968,6 @@ const Result = () => {
 const AppBody = (props) => {
   return (
     <div className="bodyWrapper">
-      <OptionsList onChange={props.onChange}/>
-      <div className="btn" onClick={props.onClick}>?</div>
       <ResultsList categoryId={props.categoryId}/>
     </div>
   );
@@ -12978,44 +12977,43 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      item: '',
-      category: '',
-      categoryId: '',
-      title: '',
-      url: '',
-      loading: false,
+      categoryName: '選択してください',
     }
     this.handleClick = this.handleClick.bind(this);
     this.handleOptionChange = this.handleOptionChange.bind(this);
   }
 
   handleClick() {
-      fetch('https://app.rakuten.co.jp/services/api/Recipe/CategoryRanking/20170426?applicationId=1072861491823725264&categoryId=10')
-      .then(res => res.json())
-      .then(
-        (result) => {
-          console.log(result.result[0].recipeTitle);
-          // this.setState({
+    const categories = largeCat.slice();
+    const result = categories.filter(category => category.categoryName == this.state.categoryName);
+    const categoryId = result[0].categoryId;
+    console.log(categoryId);
+    
 
-          // })
-        },
-        (error) => {
-          console.log(error);
-        }
-      )
+    fetch('https://app.rakuten.co.jp/services/api/Recipe/CategoryRanking/20170426?applicationId=1072861491823725264&categoryId=' + categoryId)
+    .then(res => res.json())
+    .then(
+      (result) => {
+        console.log(result.result[0].recipeTitle);
+        
+      },
+      (error) => {
+        console.log(error);
+      }
+    )
   }
 
   handleOptionChange(e) {
     this.setState({
-      category: e.target.value,
+      categoryName: e.target.value,
     })
   }
   
   render() {
     return (
       <div>
-        <AppHeader />
-        <AppBody item={this.state.item} categoryId={this.state.categoryId} onClick={this.handleClick} onChange={this.handleOptionChange}/>
+        <AppHeader categoryName={this.state.categoryName} onChange={this.handleOptionChange} onClick={this.handleClick}/>
+        <AppBody categoryName={this.state.categoryName} />
       </div>
     );
   }  
