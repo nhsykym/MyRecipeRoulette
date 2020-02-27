@@ -12926,8 +12926,10 @@ const AppHeader = (props) => {
   return (
     <div className="headerWrapper">
       <h1>レシピ検索サービス</h1>
-      <OptionsList categoryName={props.categoryName} onChange={props.onChange}/>
-      <div className="btn" onClick={props.onClick}>?</div>
+      <div className="optionBtn">
+        <OptionsList categoryName={props.categoryName} onChange={props.onChange}/>
+        <button className="btn" onClick={props.onClick}>検索</button>
+      </div>
     </div>
   );
 }
@@ -12938,7 +12940,7 @@ const OptionsList = (props) => {
     <option key={option.categoryId}>{option.categoryName}</option>
   );
   return (
-    <div>
+    <div className="optionsList">
       <label>カテゴリー</label>
       <select value={props.categoryName} onChange={props.onChange}>
         <option>選択してください</option>
@@ -12950,17 +12952,15 @@ const OptionsList = (props) => {
 
 const ResultsList = (props) => {
   const rows = props.topRecipes.map((recipe, index) =>
-    <div key={index}>
+    <li key={index} className="recipeList">
       <h3><a href={recipe.recipeUrl}>{index + 1}位: {recipe.recipeTitle}</a></h3>
       <img src={recipe.foodImageUrl} className="foodImage"/>
-    </div>
+    </li>
   );
-  
   return (
-    <div className="results">
+    <ul className="results">
       {rows}
-    </div>
-
+    </ul>
   );
 }
 
@@ -13013,7 +13013,7 @@ class App extends React.Component {
   
   render() {
     return (
-      <div>
+      <div className="wrapper">
         <AppHeader categoryName={this.state.categoryName} onChange={this.handleOptionChange} onClick={this.handleClick}/>
         <AppBody topRecipes={this.state.topRecipes} />
       </div>
