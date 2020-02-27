@@ -12950,8 +12950,8 @@ const OptionsList = (props) => {
 
 const ResultsList = (props) => {
   const rows = props.topRecipes.map((recipe, index) =>
-    <div>
-      <h3 key={index}><a href={recipe.recipeUrl}>{index + 1}位: {recipe.recipeTitle}</a></h3>
+    <div key={index}>
+      <h3><a href={recipe.recipeUrl}>{index + 1}位: {recipe.recipeTitle}</a></h3>
       <img src={recipe.foodImageUrl} className="foodImage"/>
     </div>
   );
