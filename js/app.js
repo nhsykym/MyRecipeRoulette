@@ -12949,26 +12949,25 @@ const OptionsList = (props) => {
 }
 
 const ResultsList = (props) => {
+  const rows = props.topRecipes.map((recipe, index) =>
+    <div>
+      <h3 key={index}><a href={recipe.recipeUrl}>{index + 1}位: {recipe.recipeTitle}</a></h3>
+      <img src={recipe.foodImageUrl} className="foodImage"/>
+    </div>
+  );
+  
   return (
-    <div className="result">
-      <Result />
-      <Result />
-      <Result />
+    <div className="results">
+      {rows}
     </div>
 
-  );
-}
-
-const Result = () => {
-  return (
-    <h3>recipe</h3>
   );
 }
 
 const AppBody = (props) => {
   return (
     <div className="bodyWrapper">
-      <ResultsList categoryId={props.categoryId}/>
+      <ResultsList topRecipes={props.topRecipes}/>
     </div>
   );
 }
@@ -12978,6 +12977,7 @@ class App extends React.Component {
     super(props);
     this.state = {
       categoryName: '選択してください',
+      topRecipes: [],
     }
     this.handleClick = this.handleClick.bind(this);
     this.handleOptionChange = this.handleOptionChange.bind(this);
@@ -12985,17 +12985,19 @@ class App extends React.Component {
 
   handleClick() {
     const categories = largeCat.slice();
+    if (this.state.categoryName == '選択してください') {
+      return;
+    }
     const result = categories.filter(category => category.categoryName == this.state.categoryName);
     const categoryId = result[0].categoryId;
-    console.log(categoryId);
-    
 
     fetch('https://app.rakuten.co.jp/services/api/Recipe/CategoryRanking/20170426?applicationId=1072861491823725264&categoryId=' + categoryId)
     .then(res => res.json())
     .then(
-      (result) => {
-        console.log(result.result[0].recipeTitle);
-        
+      (results) => {
+        this.setState({
+          topRecipes: results.result,
+        })
       },
       (error) => {
         console.log(error);
@@ -13013,7 +13015,7 @@ class App extends React.Component {
     return (
       <div>
         <AppHeader categoryName={this.state.categoryName} onChange={this.handleOptionChange} onClick={this.handleClick}/>
-        <AppBody categoryName={this.state.categoryName} />
+        <AppBody topRecipes={this.state.topRecipes} />
       </div>
     );
   }  
