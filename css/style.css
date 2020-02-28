@@ -7,16 +7,12 @@ body {
   width: 100%
 }
 
-.wrapper {
-  border: 1px solid #333;
-}
-
 ul, ol {
   padding: 0;
 }
 
 ul li {
-  list-style-type: none!important;/*ポチ消す*/
+  list-style-type: none;
   padding: 0.5em 0.5em 0.5em 0.5em;
   margin-bottom: 5px;
   line-height: 1.5;
@@ -32,6 +28,10 @@ ul li {
   text-decoration: none;
 }
 
+.radioBtn {
+  padding-bottom: 10px;
+}
+
 .optionBtn {
   display: flex;
   justify-content: center;
@@ -41,6 +41,6 @@ ul li {
   margin-left: 10px;
 }
 
-.optionsList label {
-  margin-right: 10px;
+.optionBtn label {
+  padding-right: 10px;
 }
