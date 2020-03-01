@@ -220,6 +220,7 @@ const AppHeader = (props) => {
   return (
     <div className="headerWrapper">
       <h1>レシピ検索</h1>
+      
       <OptionsList categoryName={props.categoryName} onChange={props.onChange} onSubmit={props.onSubmit}/>
     </div>
   );
