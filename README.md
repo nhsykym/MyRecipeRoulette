@@ -1,4 +1,3 @@
-# MyRecipiRoulette
-楽天レシピのカテゴリ上位4位までのレシピを表示するWebアプリ
+ReactでAPI叩いてみただけのやつ
 
 https://ny-recipe.herokuapp.com
